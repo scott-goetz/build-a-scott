@@ -1,6 +1,11 @@
+.DS_Store
+
+npm-debug.log
 node_modules
 
+.tmp
 .dist
+
 src/css/*.min.css
 src/js/vendor/*/*
 src/js/*.min.js
