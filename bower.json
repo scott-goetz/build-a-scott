@@ -1,0 +1,8 @@
+{
+  "name": "build-a-scott",
+  "version": "0.0.1",
+  "dependencies": {},
+  "devDependencies": {
+    "gsap": "~1.18.0"
+  }
+}
