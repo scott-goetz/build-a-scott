@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "dependencies": {},
   "devDependencies": {
-    "gsap": "~1.18.0"
+    "gsap": "~1.18.0",
+    "angular": "^1.5.0",
+    "angular-ui-router": "^0.2.18",
+    "jquery": "^2.2.1"
   }
 }

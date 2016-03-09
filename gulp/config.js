@@ -4,9 +4,11 @@ var data = {};
 
 data.scripts = {
 	'vendor': [
-		'src/js/vendor/jquery/dist/jquery.min.js',
-		'src/js/vendor/gsap/src/minified/plugins/CSSPlugin.min.js',
-		'src/js/vendor/gsap/src/minified/TweenMax.min.js'
+		'bower_components/jquery/dist/jquery.min.js',
+		'bower_components/gsap/src/minified/plugins/CSSPlugin.min.js',
+		'bower_components/gsap/src/minified/TweenMax.min.js',
+		'bower_components/angular/angular.min.js',
+		'bower_components/angular-ui-router/release/angular-ui-router.min.js'
 	],
 	'main': [
 		'src/js/main.js'

@@ -3,8 +3,7 @@
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')({ camelize: true });
 
-var browserSync = require('browser-sync'),
-	merge = require('merge-stream');
+var merge = require('merge-stream');
 
 var config = require('./config.js'),
 	configData = config.getData();

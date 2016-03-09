@@ -1,0 +1,45 @@
+@import 'mixins';
+@import 'settings';
+
+hr {
+  width: 110px;
+  height: 1px;
+  background: $hr-color;
+  border: none;
+  display: block;
+}
+
+a.button {
+  background: map-get($cta, primary-background);
+  border-width: remCalc(map-get($cta, border-width));
+  border-color: map-get($cta, primary-border-color);
+  border-radius: 100px;
+  border-style: solid;
+  color: map-get($cta, primary-color);
+  @include font-size(map-get($cta, font-size));
+  display: inline-block;
+  padding: remCalc(map-get($cta, padding));
+  text-decoration: none;
+  text-transform: uppercase;
+  @include transition(background .3s ease-out, color .3s ease-out);
+
+  &:hover {
+    //background: black;
+    //color: pink;
+  }
+
+  &.alt,
+  &.back {
+    background: map-get($cta, secondary-background);
+    border-color: map-get($cta, secondary-border-color);
+    color: map-get($cta, secondary-color);
+
+    &:hover {
+
+    }
+  }
+}
+
+#introduction {
+
+}
