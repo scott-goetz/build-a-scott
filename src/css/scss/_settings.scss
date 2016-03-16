@@ -1,5 +1,34 @@
-$primary-color: #464d57;
+
+// COLORS
+// ----------------------------
+
+$background-color: #132227;
+
+$primary-color: #ffffff;
+//$primary-color: #464d57;
 $secondary-color: #2b2a32;
+
+
+// COMMON ELEMENTS
+// ----------------------------
+
+$hr: (
+  width: 110,
+  height: 1,
+  color: #17a882
+);
+
+
+// HEADINGS
+// ----------------------------
+
+$headings: (
+
+);
+
+
+// CTAS
+// ----------------------------
 
 $cta: (
   font-size: 18,
@@ -7,10 +36,10 @@ $cta: (
   primary-border-color: #17b289,
   primary-color: #ffffff,
   secondary-background: transparent,
-  secondary-border-color: #b7b7b7,
-  secondary-color: #84838e,
-  border-width: 1,
-  padding: 10 30
+  secondary-border-color: #233e47,
+  secondary-color: #ffffff,
+  border-width: 2,
+  letter-spacing: 2.5,
+  line-height: 1,
+  padding: 12 30
 );
-
-$hr-color: #26b791;
