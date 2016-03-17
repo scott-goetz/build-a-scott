@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('buildScott')
-  .controller('BuildController', ['$scope', 'BuildService', function ($scope, BuildService) {
+  .controller('BuildController', ['$scope', '$rootScope', 'BuildService', function ($scope, $rootScope, BuildService) {
     $scope.test = 'test buttz';
     $scope.buttz = 'BUTTZ';
 
@@ -10,4 +10,8 @@ angular.module('buildScott')
     $scope.numberOfPanels = BuildService.getNumberOfPanels();
     $scope.panelHeights = BuildService.getPanelHeights();
     $scope.panelImages = BuildService.getPanelImages();
+
+    $scope.randomize = function() {
+      $rootScope.$broadcast('randomizeFace',{});
+    };
   }]);

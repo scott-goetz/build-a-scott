@@ -1,8 +1,11 @@
-<div id="build" class="section-column" ng-controller="BuildController ">
-  <scott-machine id="scott-machine"></scott-machine>
-</div>
-<div class="section-column">
-  <div class="content">
-    <h2>Generate Your Scott {{ test }} {{ buttz }}</h2>
+<section id="build" class="page-wrapper" ng-controller="BuildController">
+  <div class="section-column">
+    <scott-machine id="scott-machine"></scott-machine>
   </div>
-</div>
+  <div class="section-column">
+    <div class="content">
+      <h2>Generate Your Scott {{ test }} {{ buttz }}</h2>
+      <a class="button alt" ng-click="randomize()">Randomize</a>
+    </div>
+  </div>
+</section>

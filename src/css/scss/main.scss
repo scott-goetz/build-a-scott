@@ -53,6 +53,7 @@ a.button {
   border-radius: 100px;
   border-style: solid;
   color: map-get($cta, primary-color);
+  cursor: pointer;
   @include font-montserrat();
   @include font-size(map-get($cta, font-size));
   display: inline-block;
@@ -84,32 +85,38 @@ a.button {
 // LAYOUT
 // ----------------------------
 
-#section-wrapper {
+#view {
   height: 100%;
   @include flexDisplay();
 
-  .section-row,
-  .section-column {
-    position: relative;
+  .page-wrapper {
+    width: 100%;
+    height: 100%;
+    @include flexDisplay();
 
-    .content {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      @include translate(-50%, -50%);
+    .section-row,
+    .section-column {
+      position: relative;
+
+      .content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        @include translate(-50%, -50%);
+      }
     }
-  }
 
-  .section-row {
-    @include flexDisplay();
-    @include flexDirection();
-    @include flexGrow(1);
-  }
+    .section-row {
+      @include flexDisplay();
+      @include flexDirection();
+      @include flexGrow(1);
+    }
 
-  .section-column {
-    @include flexDisplay();
-    @include flexDirection(column);
-    @include flexGrow(1);
+    .section-column {
+      @include flexDisplay();
+      @include flexDirection(column);
+      @include flexGrow(1);
+    }
   }
 }
 
