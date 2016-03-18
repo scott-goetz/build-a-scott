@@ -31,12 +31,12 @@ $rem-base: 16px !default;
 
 @mixin font-size($size) {
   font-size: $size;
-  font-size: remCalc($size);
+  font-size: rem-calc($size);
 }
 
 @mixin font-size($size) {
   font-size: $size;
-  font-size: remCalc($size);
+  font-size: rem-calc($size);
 }
 
 // ANIMATIONS

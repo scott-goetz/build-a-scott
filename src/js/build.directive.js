@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('buildScott')
-  .directive('scottMachine', function ($window) {
+  .directive('scottMachine', function ($window, $state) {
     return {
       restrict: 'E',
       template: '<canvas></canvas>',
@@ -34,8 +34,12 @@ angular.module('buildScott')
             newImageWidth = $scope.imageDimensions.width * scaleDiff,
             newImageHeight = elementHeight,
             panelLength = Object.keys($scope.panelImages).length,
-            dragThreshold = 90,
             offsetX = 0;
+
+        var options = {
+            dragThreshold: 90,
+            randomizeTimerPause: 5000
+        };
 
 
         /**
@@ -80,10 +84,10 @@ angular.module('buildScott')
               currSlot.touchend = currSlot.touchendoutside = function (data) {
                 if (this.dragging) {
                   // Update panel indexes
-                  if (this.position.x > (initialX + dragThreshold) && currSlotImages[this.index] !== 0) {
+                  if (this.position.x > (initialX + options.dragThreshold) && currSlotImages[this.index] !== 0) {
                     // Decrease panel current index
                     currSlotImages[this.index]--;
-                  } else if (this.position.x < (initialX - dragThreshold) && currSlotImages[this.index] <= Object.keys(currSlotImages).length) {
+                  } else if (this.position.x < (initialX - options.dragThreshold) && currSlotImages[this.index] <= Object.keys(currSlotImages).length) {
                     // Increase panel current index
                     currSlotImages[this.index]++;
                   }
@@ -107,9 +111,16 @@ angular.module('buildScott')
             };
           }
 
+          // Determine whether to run in auto mode
+          if ($state.is('demo')) {
+            randomizeTimer();
+          }
+
+
           // Listen for controller calls
           $scope.$on('randomizeFace', randomize);
           $scope.$on('downloadImage', convertToImage);
+          $scope.$on('reflow', resize);
 
           // Window events
           windowElement.on('resize', $.debounce(100, resize));
@@ -250,6 +261,17 @@ angular.module('buildScott')
 
             positionFaces(slots[i], randomImageIndex);
           }
+        };
+
+
+        /**
+         * Trigger randomize every so often
+         */
+        var randomizeTimer = function() {
+          setTimeout(function() {
+            randomize();
+            randomizeTimer();
+          }, options.randomizeTimerPause);
         };
 
 

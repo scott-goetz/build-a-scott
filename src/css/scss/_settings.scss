@@ -19,6 +19,9 @@ $hr: (
   margin: 50 0
 );
 
+$cm-logo: (
+  offsetY: 70
+);
 
 // HEADINGS
 // ----------------------------
@@ -47,4 +50,13 @@ $cta: (
   line-height: 1.25,
   padding: 12 30,
   margin: 8 0
+);
+
+
+// MARGINS
+// ----------------------------
+$margins: (
+  small: 10,
+  medium: 25,
+  large: 50
 );

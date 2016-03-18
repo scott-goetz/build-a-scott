@@ -35,6 +35,30 @@ hr {
   margin-right: auto;
 }
 
+.cm-logo {
+  width: 300px;
+  height: 63px;
+  background: url("../media/images/critical-mass.jpg") no-repeat right top #000;
+  position: absolute;
+  top: rem-calc(map-get($cm-logo, offsetY));
+  left: 50%;
+  text-indent: -9999px;
+  @include translate(-50%, 0);
+  z-index: 1000;
+}
+
+.build-a-scott-url {
+  width: 90%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  position: absolute;
+  top: 53%;
+  left: 50%;
+  @include translate(-50%, -50%);
+  z-index: 500;
+}
+
 .underline {
   text-decoration: underline;
 }
@@ -62,7 +86,7 @@ h1, h2, h3, h4, h5, h6 {
 // BUTTONS
 // ----------------------------
 
-a.button {
+.button {
   background-color: map-get($cta, primary-background);
   border-width: rem-calc(map-get($cta, border-width));
   border-color: map-get($cta, primary-border-color);
@@ -103,6 +127,26 @@ a.button {
   &.full {
     width: 100%;
   }
+
+  .icn:after {
+    font-family: $font-family-font-awesome;
+  }
+
+  &.icn-download:after { content: "\f019"; }
+  &.icn-random:after { content: "\f074"; }
+  &.icn-font:after { content: "\f031"; }
+}
+
+
+// MARGINS
+// ----------------------------
+
+.margin-top {
+  margin-top: rem-calc(map-get($margins, large));
+}
+
+.margin-bottom {
+  margin-bottom: rem-calc(map-get($margins, large));
 }
 
 
@@ -117,6 +161,7 @@ a.button {
     width: 100%;
     height: 100%;
     @include flexDisplay();
+    position: relative;
 
     .section-row,
     .section-column {
@@ -150,39 +195,39 @@ a.button {
 // SECTIONS
 // ----------------------------
 
-#introduction {
-  .headline {
+#build {
 
-  }
 }
 
-#build {
-  #scott-machine {
+#demo {
+
+}
+
+#scott-machine {
+  width: 100%;
+  cursor: move;
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  @include flexDisplay();
+  @include flexDirection(column);
+  font-size: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  &:active {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+  }
+
+  canvas {
     width: 100%;
-    cursor: move;
-    cursor: grab;
-    cursor: -moz-grab;
-    cursor: -webkit-grab;
-    @include flexDisplay();
-    @include flexDirection(column);
-    font-size: 0;
-    overflow: hidden;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-
-    &:active {
-      cursor: grabbing;
-      cursor: -moz-grabbing;
-      cursor: -webkit-grabbing;
-    }
-
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
+    height: 100%;
+    display: block;
   }
 }

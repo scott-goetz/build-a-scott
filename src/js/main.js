@@ -10,23 +10,13 @@ angular.module('buildScott', ['ui.router'])
         templateUrl: "partials/introduction.html"
       })
 
-      .state('components', {
-        url: "/components",
-        templateUrl: "partials/components.html"
-      })
-
-      .state('about', {
-        url: "/about",
-        templateUrl: "partials/about.html"
-      })
-
       .state('build', {
         url: "/build",
         templateUrl: "partials/build.html"
       })
 
-      .state('export', {
-        url: "/export",
-        templateUrl: "partials/export.html"
+      .state('demo', {
+        url: "/demo",
+        templateUrl: "partials/demo.html"
       })
   }]);
