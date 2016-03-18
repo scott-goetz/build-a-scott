@@ -13,15 +13,14 @@ angular.module('buildScott')
             autoDetectRenderer = PIXI.autoDetectRenderer,
             loader = PIXI.loader,
             resources = loader.resources,
-            Sprite = PIXI.Sprite,
-            Graphics = PIXI.Graphics;
+            Sprite = PIXI.Sprite;
 
         var stage = new Container(),
             renderer = autoDetectRenderer($element.width(), $element.height(), {
               view: canvasElement[0],
               antialiasing: false,
               autoResize: true,
-              preserveDrawingBuffer: true,
+              preserveDrawingBuffer: true, // Need this for saving to image
               resolution: 1,
               transparent: false
             });
@@ -38,6 +37,10 @@ angular.module('buildScott')
             dragThreshold = 90,
             offsetX = 0;
 
+
+        /**
+         * Init Scott Machine.
+         */
         var init = function() {
           // Load all Scott images
           for (var key in $scope.allImages) {
@@ -49,74 +52,14 @@ angular.module('buildScott')
         };
 
 
-        var setup = function() {
-          var panelCount = 0,
-              panelPosY = 0;
-
-          for (var panel in $scope.panelImages) {
-            var currPanelImages = $scope.panelImages[panel],
-                panelHeightPercent = $scope.panelHeights[panelCount] / $scope.imageDimensions.height,
-                panelHeight = $element.height() * panelHeightPercent,
-                panelWidth = $element.width(),
-                imageCount = 0;
-
-            // Container for current slot sprites
-            slots[panelCount] = new Container();
-            slots[panelCount].height = panelHeight;
-            slots[panelCount].x = 0;
-            slots[panelCount].y = panelPosY;
-            slots[panelCount].index = panelCount; // Needed for dragging
-
-            for (var key in currPanelImages) {
-              var spriteTexture = resources[key].texture;
-
-              // Add, position and scale image
-              var currSprite = new Sprite(spriteTexture);
-              currSprite.scale.x = currSprite.scale.y = scaleDiff;
-              currSprite.x = newImageWidth * imageCount;
-              currSprite.y = 0;
-
-              slots[panelCount].addChild(currSprite);
-
-              imageCount++;
-            }
-
-            stage.addChild(slots[panelCount]);
-
-            panelPosY = panelPosY + panelHeight;
-            panelCount++;
-
-            // Begin storing current indexes
-            currSlotImages[panel] = 0;
-          }
-
-          draw();
-          requestAnimationFrame(animate);
-        };
-
-
-        var draw = function() {
-          renderer.render(stage);
-
-          // Ensure we set window size vars
-          resize();
-
-          // Set initial image position
-          for (var i = 0; i < slots.length; i++) {
-            TweenMax.set(slots[i], {
-              x: -offsetX
-            });
-          }
-
-          events();
-        };
-
-
+        /**
+         * Attach events to Scott Machine
+         */
         var events = function() {
           // Face panel drag functionality
           for (var i = 0; i < slots.length; i++) {
             var currSlot = slots[i],
-                initialX = 0;
+              initialX = 0;
 
             currSlot.interactive = true;
 
@@ -136,8 +79,6 @@ angular.module('buildScott')
             currSlot.mouseup = currSlot.mouseupoutside =
               currSlot.touchend = currSlot.touchendoutside = function (data) {
                 if (this.dragging) {
-                  console.log(currSlotImages[this.index], Object.keys(currSlotImages).length);
-
                   // Update panel indexes
                   if (this.position.x > (initialX + dragThreshold) && currSlotImages[this.index] !== 0) {
                     // Decrease panel current index
@@ -145,11 +86,7 @@ angular.module('buildScott')
                   } else if (this.position.x < (initialX - dragThreshold) && currSlotImages[this.index] <= Object.keys(currSlotImages).length) {
                     // Increase panel current index
                     currSlotImages[this.index]++;
-                    console.log('increase');
                   }
-
-                  console.log(currSlotImages[this.index], Object.keys(currSlotImages).length);
-                  console.log('==============');
 
                   // Reposition faces
                   positionFaces(this, currSlotImages[this.index]);
@@ -175,10 +112,136 @@ angular.module('buildScott')
           $scope.$on('downloadImage', convertToImage);
 
           // Window events
-          windowElement.on('resize',resize);
+          windowElement.on('resize', $.debounce(100, resize));
         };
 
 
+        /**
+         * Create containers/sprites and add them to the stage
+         */
+        var setup = function() {
+          var panelCount = 0,
+              panelPosY = 0;
+
+          for (var panel in $scope.panelImages) {
+            var currPanelImages = $scope.panelImages[panel],
+                panelHeightPercent = $scope.panelHeights[panelCount] / $scope.imageDimensions.height,
+                panelHeight = $element.height() * panelHeightPercent,
+                imageCount = 0;
+
+            // Container for current slot sprites
+            slots[panelCount] = new Container();
+            slots[panelCount].x = 0;
+            slots[panelCount].index = panelCount; // Necessary for dragging
+
+            for (var key in currPanelImages) {
+              var spriteTexture = resources[key].texture;
+
+              // Add, position and scale image
+              var currSprite = new Sprite(spriteTexture);
+              //currSprite.scale.x = currSprite.scale.y = scaleDiff;
+              //currSprite.x = newImageWidth * imageCount;
+              currSprite.y = 0;
+
+              slots[panelCount].addChild(currSprite);
+
+              imageCount++;
+            }
+
+            stage.addChild(slots[panelCount]);
+
+            panelPosY = panelPosY + panelHeight;
+            panelCount++;
+
+            // Begin storing current indexes
+            currSlotImages[panel] = 0;
+          }
+
+          draw();
+          requestAnimationFrame(animate);
+        };
+
+
+        /**
+         * Draw stage on canvas and set initial images position
+         */
+        var draw = function() {
+          renderer.render(stage);
+
+          // Ensure we set window size vars
+          resize();
+
+          // Set initial image position
+          for (var i = 0; i < slots.length; i++) {
+            TweenMax.set(slots[i], {
+              x: -offsetX
+            });
+          }
+
+          events();
+        };
+
+
+        /**
+         * Rescale/reposition slots
+         */
+        var scale = function () {
+          var slotPosY = 0;
+
+          for (var i = 0; i < slots.length; i++) {
+            var currSlot = slots[i],
+                slotHeightPercent = $scope.panelHeights[i] / $scope.imageDimensions.height,
+                slotHeight = elementHeight * slotHeightPercent;
+
+            currSlot.y = slotPosY;
+
+            for (var j = 0; j < currSlot.children.length; j++) {
+              var currSprite = currSlot.children[j];
+
+              currSprite.scale.x = currSprite.scale.y = scaleDiff;
+              currSprite.x = newImageWidth * j;
+            }
+
+            slotPosY = slotPosY + slotHeight;
+
+            positionFaces(currSlot, currSlotImages[i]);
+          }
+        };
+
+
+        /**
+         * Window resize event. Set necessary variables based on new dimensions.
+         */
+        var resize = function() {
+          elementWidth = $element.width();
+          elementHeight = $element.height();
+          scaleDiff = elementHeight / $scope.imageDimensions.height;
+          newImageWidth = $scope.imageDimensions.width * scaleDiff;
+          newImageHeight = elementHeight;
+          offsetX = (newImageWidth / 2) - (elementWidth / 2);
+
+          renderer.resize(elementWidth, elementHeight);
+
+          scale();
+        };
+
+
+        /**
+         * Animate slot to current/new image index
+         *
+         * @param slot
+         * @param index
+         */
+        var positionFaces = function(slot, index) {
+          TweenMax.to(slot, 0.3, {
+            x: -((index * newImageWidth) + offsetX)
+          });
+        };
+
+
+        /**
+         * Randomly select an image in each panel
+         */
         var randomize = function() {
           for (var i = 0; i < slots.length; i++) {
             var randomImageIndex = Math.round(Math.random() * panelLength);
@@ -190,62 +253,24 @@ angular.module('buildScott')
         };
 
 
-        var positionFaces = function(slot, index) {
-          TweenMax.to(slot, 0.3, {
-            x: -((index * newImageWidth) + offsetX)
-          });
-        };
-
-
-        var scale = function () {
-          var slotPosY = 0;
-
-          for (var i = 0; i < slots.length; i++) {
-            var currSlot = slots[i],
-                slotHeightPercent = $scope.panelHeights[i] / $scope.imageDimensions.height,
-                slotHeight = $element.height() * slotHeightPercent,
-                slotWidth = $element.width();
-
-            currSlot.height = slotHeight;
-            currSlot.y = slotPosY;
-
-            for (var j = 0; j < currSlot.children.length; j++) {
-              currSlot.children[j].scale.x = currSlot.children[j].scale.y = scaleDiff;
-            }
-
-            slotPosY = slotPosY + slotHeight;
-
-            console.log(currSlot);
-            //slots[i].tileScale.x = slots[i].tileScale.y = scaleDiff;
-          }
-        };
-
-
-        var resize = function() {
-          console.log('=============');
-          console.log('resize');
-
-          elementWidth = $element.width();
-          elementHeight = $element.height();
-          scaleDiff = elementHeight / $scope.imageDimensions.height;
-          offsetX = (newImageWidth / 2) - (elementWidth / 2);
-
-          renderer.resize(elementWidth, elementHeight)
-
-          scale();
-        };
-
-
+        /**
+         * Start canvas animation loop.
+         */
         var animate = function() {
           requestAnimationFrame(animate);
           renderer.render(stage);
         };
 
+
+        /**
+         * Convert Canvas drawing to image
+         */
         var convertToImage = function() {
           canvasElement[0].toBlob(function(blob) {
             saveAs(blob, "my-scott.png");
           });
         };
+
 
         init();
       }

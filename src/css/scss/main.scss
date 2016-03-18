@@ -2,6 +2,13 @@
 @import 'fonts';
 @import 'settings';
 
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
 html, body {
   height: 100%;
 }
@@ -23,6 +30,13 @@ hr {
   background: map-get($hr, color);
   border: none;
   display: block;
+  margin: rem-calc(map-get($hr, margin));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.underline {
+  text-decoration: underline;
 }
 
 
@@ -34,11 +48,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .headline {
-  //text-align: left;
+  font-size: rem-calc(map-get($headline, font-size));
+  margin: 0;
 }
 
 .tagline {
   @include font-libre-baskerville-italic();
+  margin: 0;
 }
 
 
@@ -47,7 +63,7 @@ h1, h2, h3, h4, h5, h6 {
 // ----------------------------
 
 a.button {
-  background: map-get($cta, primary-background);
+  background-color: map-get($cta, primary-background);
   border-width: rem-calc(map-get($cta, border-width));
   border-color: map-get($cta, primary-border-color);
   border-radius: 100px;
@@ -59,14 +75,16 @@ a.button {
   display: inline-block;
   letter-spacing: rem-calc(map-get($cta, letter-spacing));
   line-height: map-get($cta, line-height);
+  margin: rem-calc(map-get($cta, margin));
   padding: rem-calc(map-get($cta, padding));
   text-decoration: none;
   text-transform: uppercase;
-  @include transition(background .3s ease-out, color .3s ease-out);
+  @include transition(background .4s ease-out, color .4s ease-out);
 
   &:hover {
-    //background: black;
-    //color: pink;
+    background-color: map-get($cta, hover-background);
+    border-color: map-get($cta, hover-border-color);
+    color: map-get($cta, hover-color);
   }
 
   &.alt,
@@ -76,8 +94,14 @@ a.button {
     color: map-get($cta, secondary-color);
 
     &:hover {
-
+      background-color: map-get($cta, hover-background);
+      border-color: map-get($cta, hover-border-color);
+      color: map-get($cta, hover-color);
     }
+  }
+
+  &.full {
+    width: 100%;
   }
 }
 
@@ -99,6 +123,7 @@ a.button {
       position: relative;
 
       .content {
+        width: 70%;
         position: absolute;
         top: 50%;
         left: 50%;
@@ -158,21 +183,6 @@ a.button {
       width: 100%;
       height: 100%;
       display: block;
-    }
-
-
-    .slot {
-      @include flexDisplay();
-      @include flexDirection();
-      @include flexGrow(1);
-
-
-
-      &.slot-1 { height: 27.26%; }
-      &.slot-2 { height: 18.63%; }
-      &.slot-3 { height: 12.47%; }
-      &.slot-4 { height: 14.79%; }
-      &.slot-5 { height: 27.40%; }
     }
   }
 }
