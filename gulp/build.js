@@ -9,5 +9,5 @@ var runSequence = require('run-sequence');
 
 gulp.task('build', ['clean', 'scripts', 'styles'], function () {
 	return gulp.src(['src/**/*', '!src/css/scss'])
-		.pipe(gulp.dest('.dist'));
+		.pipe(gulp.dest('dist'));
 });

@@ -25,6 +25,5 @@
   },
   "_source": "git://github.com/GoodBoyDigital/pixi.js.git",
   "_target": "^3.0.10",
-  "_originalSource": "pixi.js",
-  "_direct": true
+  "_originalSource": "pixi.js"
 }
