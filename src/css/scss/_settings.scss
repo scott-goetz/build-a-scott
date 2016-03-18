@@ -20,7 +20,9 @@ $hr: (
 );
 
 $cm-logo: (
-  offsetY: 70
+  width: 300,
+  height: 63,
+  offset-y: 70
 );
 
 // HEADINGS
@@ -35,7 +37,7 @@ $headline: (
 // ----------------------------
 
 $cta: (
-  font-size: 18,
+  font-size: 14,
   primary-background: #17b289,
   primary-border-color: #17b289,
   primary-color: #ffffff,
@@ -48,8 +50,9 @@ $cta: (
   border-width: 2,
   letter-spacing: 2.5,
   line-height: 1.25,
-  padding: 12 30,
-  margin: 8 0
+  padding: 12 60,
+  margin: 8 0,
+  icn-offset-x: 20
 );
 
 

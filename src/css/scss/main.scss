@@ -36,11 +36,11 @@ hr {
 }
 
 .cm-logo {
-  width: 300px;
-  height: 63px;
+  width: rem-calc(map-get($cm-logo, width));
+  height: rem-calc(map-get($cm-logo, height));
   background: url("../media/images/critical-mass.jpg") no-repeat right top #000;
   position: absolute;
-  top: rem-calc(map-get($cm-logo, offsetY));
+  top: rem-calc(map-get($cm-logo, offset-y));
   left: 50%;
   text-indent: -9999px;
   @include translate(-50%, 0);
@@ -128,12 +128,21 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
   }
 
-  .icn:after {
-    font-family: $font-family-font-awesome;
+  &.icn {
+    position: relative;
+
+    &:after {
+      display: block;
+      font-family: $font-family-font-awesome;
+      position: absolute;
+      top: 50%;
+      right: rem-calc(map-get($cta, icn-offset-x));
+      @include translate(0, -50%);
+    }
   }
 
   &.icn-download:after { content: "\f019"; }
-  &.icn-random:after { content: "\f074"; }
+  &.icn-random:after { content: "\f074"; top: 53% }
   &.icn-font:after { content: "\f031"; }
 }
 
@@ -229,5 +238,14 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
     height: 100%;
     display: block;
+  }
+
+  .instructions {
+    background: rgba(0,0,0,0.5);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    @include translate(-50%, -50%);
+    z-index: 10;
   }
 }
