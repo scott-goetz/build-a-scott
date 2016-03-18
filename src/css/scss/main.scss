@@ -24,6 +24,12 @@ body {
 // COMMON ELEMENTS
 // ----------------------------
 
+p {
+  font-size: 25px;
+  font-size: rem-calc(map-get($p, font-size));
+  line-height: map-get($p, line-height);
+}
+
 hr {
   width: rem-calc(map-get($hr, width));
   height: rem-calc(map-get($hr, height));
@@ -183,6 +189,8 @@ h1, h2, h3, h4, h5, h6 {
         left: 50%;
         text-align: center;
         @include translate(-50%, -50%);
+
+        p {}
       }
     }
 
