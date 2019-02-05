@@ -2,10 +2,12 @@
 
 npm-debug.log
 node_modules
+bower_components
 
 .idea
 .tmp
 dist
+_archive
 
 src/css/*.min.css
 src/js/vendor/*/*

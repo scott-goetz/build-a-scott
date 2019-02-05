@@ -1,0 +1,214 @@
+@import 'mixins';
+@import 'fonts';
+@import 'settings';
+
+html {
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: $background-color;
+  color: $primary-color;
+  @include font-libre-baskerville();
+  margin: 0;
+}
+
+// COMMON ELEMENTS
+// ----------------------------
+
+p {
+  font-size: 25px;
+  font-size: rem-calc(map-get($p, font-size));
+  line-height: map-get($p, line-height);
+}
+
+hr {
+  width: rem-calc(map-get($hr, width));
+  height: rem-calc(map-get($hr, height));
+  background: map-get($hr, color);
+  border: none;
+  display: block;
+  margin: rem-calc(map-get($hr, margin));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cm-logo {
+  width: rem-calc(map-get($cm-logo, width));
+  height: rem-calc(map-get($cm-logo, height));
+  background: url('/assets/critical-mass.jpg') no-repeat right top #000;
+  position: absolute;
+  top: rem-calc(map-get($cm-logo, offset-y));
+  left: 50%;
+  text-indent: -9999px;
+  @include translate(-50%, 0);
+  z-index: 1000;
+}
+
+.build-a-scott-url {
+  width: 90%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  position: absolute;
+  top: 53%;
+  left: 50%;
+  @include translate(-50%, -50%);
+  z-index: 500;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+// HEADINGS
+// ----------------------------
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @include font-libre-baskerville();
+}
+
+.headline {
+  font-size: rem-calc(map-get($headline, font-size));
+  margin: 0;
+}
+
+.tagline {
+  @include font-libre-baskerville-italic();
+  margin: 0;
+}
+
+// BUTTONS
+// ----------------------------
+
+.button {
+  background-color: map-get($cta, primary-background);
+  border-width: rem-calc(map-get($cta, border-width));
+  border-color: map-get($cta, primary-border-color);
+  border-radius: 100px;
+  border-style: solid;
+  color: map-get($cta, primary-color);
+  cursor: pointer;
+  @include font-montserrat();
+  @include font-size(map-get($cta, font-size));
+  display: inline-block;
+  letter-spacing: rem-calc(map-get($cta, letter-spacing));
+  line-height: map-get($cta, line-height);
+  margin: rem-calc(map-get($cta, margin));
+  padding: rem-calc(map-get($cta, padding));
+  text-decoration: none;
+  text-transform: uppercase;
+  @include transition(background 0.4s ease-out, color 0.4s ease-out);
+
+  &:hover {
+    background-color: map-get($cta, hover-background);
+    border-color: map-get($cta, hover-border-color);
+    color: map-get($cta, hover-color);
+  }
+
+  &.alt,
+  &.back {
+    background: map-get($cta, secondary-background);
+    border-color: map-get($cta, secondary-border-color);
+    color: map-get($cta, secondary-color);
+
+    &:hover {
+      background-color: map-get($cta, hover-background);
+      border-color: map-get($cta, hover-border-color);
+      color: map-get($cta, hover-color);
+    }
+  }
+
+  &.full {
+    width: 100%;
+  }
+
+  &.icn {
+    position: relative;
+
+    &:after {
+      display: block;
+      font-family: $font-family-font-awesome;
+      position: absolute;
+      top: 50%;
+      right: rem-calc(map-get($cta, icn-offset-x));
+      @include translate(0, -50%);
+    }
+  }
+
+  &.icn-download:after {
+    content: '\f019';
+  }
+  &.icn-random:after {
+    content: '\f074';
+    top: 53%;
+  }
+  &.icn-font:after {
+    content: '\f031';
+  }
+}
+
+// MARGINS
+// ----------------------------
+
+.margin-top {
+  margin-top: rem-calc(map-get($margins, large));
+}
+
+.margin-bottom {
+  margin-bottom: rem-calc(map-get($margins, large));
+}
+
+// LAYOUT
+// ----------------------------
+
+.page-wrapper {
+  width: 100%;
+  height: 100%;
+  @include flexDisplay();
+  position: relative;
+
+  .section-row,
+  .section-column {
+    position: relative;
+
+    .content {
+      width: 70%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      text-align: center;
+      @include translate(-50%, -50%);
+
+      p {
+      }
+    }
+  }
+
+  .section-row {
+    @include flexDisplay();
+    @include flexDirection();
+    @include flexGrow(1);
+  }
+
+  .section-column {
+    @include flexDisplay();
+    @include flexDirection(column);
+    @include flexGrow(1);
+  }
+}
