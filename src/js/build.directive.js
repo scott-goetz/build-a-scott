@@ -1,46 +1,48 @@
 'use strict';
 
-angular.module('buildScott')
-  .directive('scottMachine', function ($window, $state) {
+angular
+  .module('buildScott')
+  .directive('scottMachine', function($window, $state) {
     return {
       restrict: 'E',
       template: '<canvas></canvas>',
-      link: function ($scope, $element, $attr) {
-        var canvasElement = document.getElementById($attr.id).getElementsByTagName('canvas'),
-            windowElement = angular.element($window);
+      link: function($scope, $element, $attr) {
+        var canvasElement = document
+            .getElementById($attr.id)
+            .getElementsByTagName('canvas'),
+          windowElement = angular.element($window);
 
         var Container = PIXI.Container,
-            autoDetectRenderer = PIXI.autoDetectRenderer,
-            loader = PIXI.loader,
-            resources = loader.resources,
-            Sprite = PIXI.Sprite;
+          autoDetectRenderer = PIXI.autoDetectRenderer,
+          loader = PIXI.loader,
+          resources = loader.resources,
+          Sprite = PIXI.Sprite;
 
         var stage = new Container(),
-            renderer = autoDetectRenderer($element.width(), $element.height(), {
-              view: canvasElement[0],
-              antialiasing: false,
-              autoResize: true,
-              preserveDrawingBuffer: true, // Need this for saving to image
-              resolution: 1,
-              transparent: false
-            });
+          renderer = autoDetectRenderer($element.width(), $element.height(), {
+            view: canvasElement[0],
+            antialiasing: false,
+            autoResize: true,
+            preserveDrawingBuffer: true, // Need this for saving to image
+            resolution: 1,
+            transparent: false
+          });
 
         var slots = [],
-            currSlotImages = {};
+          currSlotImages = {};
 
         var elementWidth = $element.width(),
-            elementHeight = $element.height(),
-            scaleDiff = elementHeight / $scope.imageDimensions.height,
-            newImageWidth = $scope.imageDimensions.width * scaleDiff,
-            newImageHeight = elementHeight,
-            panelLength = Object.keys($scope.panelImages).length,
-            offsetX = 0;
+          elementHeight = $element.height(),
+          scaleDiff = elementHeight / $scope.imageDimensions.height,
+          newImageWidth = $scope.imageDimensions.width * scaleDiff,
+          newImageHeight = elementHeight,
+          panelLength = Object.keys($scope.panelImages).length,
+          offsetX = 0;
 
         var options = {
-            dragThreshold: 90,
-            randomizeTimerPause: 5000
+          dragThreshold: 90,
+          randomizeTimerPause: 5000
         };
-
 
         /**
          * Init Scott Machine.
@@ -55,7 +57,6 @@ angular.module('buildScott')
           loader.load(setup);
         };
 
-
         /**
          * Attach events to Scott Machine
          */
@@ -67,41 +68,47 @@ angular.module('buildScott')
 
             currSlot.interactive = true;
 
-            currSlot.mousedown = currSlot.touchstart = function (e) {
+            currSlot.mousedown = currSlot.touchstart = function(e) {
               this.dragging = true;
 
               this.mousePressPoint = [
-                e.data.getLocalPosition(this.parent).x -
-                this.position.x,
-                e.data.getLocalPosition(this.parent).y -
-                this.position.y
+                e.data.getLocalPosition(this.parent).x - this.position.x,
+                e.data.getLocalPosition(this.parent).y - this.position.y
               ];
 
               initialX = this.position.x;
             };
 
-            currSlot.mouseup = currSlot.mouseupoutside =
-              currSlot.touchend = currSlot.touchendoutside = function (data) {
-                if (this.dragging) {
-                  // Update panel indexes
-                  if (this.position.x > (initialX + options.dragThreshold) && currSlotImages[this.index] !== 0) {
-                    // Decrease panel current index
-                    currSlotImages[this.index]--;
-                  } else if (this.position.x < (initialX - options.dragThreshold) && currSlotImages[this.index] <= Object.keys(currSlotImages).length) {
-                    // Increase panel current index
-                    currSlotImages[this.index]++;
-                  }
-
-                  // Reposition faces
-                  positionFaces(this, currSlotImages[this.index]);
+            currSlot.mouseup = currSlot.mouseupoutside = currSlot.touchend = currSlot.touchendoutside = function(
+              data
+            ) {
+              if (this.dragging) {
+                // Update panel indexes
+                if (
+                  this.position.x > initialX + options.dragThreshold &&
+                  currSlotImages[this.index] !== 0
+                ) {
+                  // Decrease panel current index
+                  currSlotImages[this.index]--;
+                } else if (
+                  this.position.x < initialX - options.dragThreshold &&
+                  currSlotImages[this.index] <
+                    Object.keys(currSlotImages).length
+                ) {
+                  // Increase panel current index
+                  currSlotImages[this.index]++;
                 }
 
-                // Reset
-                this.dragging = false;
-                initialX = 0;
-              };
+                // Reposition faces
+                positionFaces(this, currSlotImages[this.index]);
+              }
 
-            currSlot.mousemove = currSlot.touchmove = function (e) {
+              // Reset
+              this.dragging = false;
+              initialX = 0;
+            };
+
+            currSlot.mousemove = currSlot.touchmove = function(e) {
               if (this.dragging) {
                 var position = e.data.getLocalPosition(this.parent);
 
@@ -116,7 +123,6 @@ angular.module('buildScott')
             randomizeTimer();
           }
 
-
           // Listen for controller calls
           $scope.$on('randomizeFace', randomize);
           $scope.$on('downloadImage', convertToImage);
@@ -126,19 +132,19 @@ angular.module('buildScott')
           windowElement.on('resize', $.debounce(100, resize));
         };
 
-
         /**
          * Create containers/sprites and add them to the stage
          */
         var setup = function() {
           var panelCount = 0,
-              panelPosY = 0;
+            panelPosY = 0;
 
           for (var panel in $scope.panelImages) {
             var currPanelImages = $scope.panelImages[panel],
-                panelHeightPercent = $scope.panelHeights[panelCount] / $scope.imageDimensions.height,
-                panelHeight = $element.height() * panelHeightPercent,
-                imageCount = 0;
+              panelHeightPercent =
+                $scope.panelHeights[panelCount] / $scope.imageDimensions.height,
+              panelHeight = $element.height() * panelHeightPercent,
+              imageCount = 0;
 
             // Container for current slot sprites
             slots[panelCount] = new Container();
@@ -172,7 +178,6 @@ angular.module('buildScott')
           requestAnimationFrame(animate);
         };
 
-
         /**
          * Draw stage on canvas and set initial images position
          */
@@ -192,17 +197,17 @@ angular.module('buildScott')
           events();
         };
 
-
         /**
          * Rescale/reposition slots
          */
-        var scale = function () {
+        var scale = function() {
           var slotPosY = 0;
 
           for (var i = 0; i < slots.length; i++) {
             var currSlot = slots[i],
-                slotHeightPercent = $scope.panelHeights[i] / $scope.imageDimensions.height,
-                slotHeight = elementHeight * slotHeightPercent;
+              slotHeightPercent =
+                $scope.panelHeights[i] / $scope.imageDimensions.height,
+              slotHeight = elementHeight * slotHeightPercent;
 
             currSlot.y = slotPosY;
 
@@ -219,7 +224,6 @@ angular.module('buildScott')
           }
         };
 
-
         /**
          * Window resize event. Set necessary variables based on new dimensions.
          */
@@ -229,13 +233,12 @@ angular.module('buildScott')
           scaleDiff = elementHeight / $scope.imageDimensions.height;
           newImageWidth = $scope.imageDimensions.width * scaleDiff;
           newImageHeight = elementHeight;
-          offsetX = (newImageWidth / 2) - (elementWidth / 2);
+          offsetX = newImageWidth / 2 - elementWidth / 2;
 
           renderer.resize(elementWidth, elementHeight);
 
           scale();
         };
-
 
         /**
          * Animate slot to current/new image index
@@ -245,10 +248,9 @@ angular.module('buildScott')
          */
         var positionFaces = function(slot, index) {
           TweenMax.to(slot, 0.3, {
-            x: -((index * newImageWidth) + offsetX)
+            x: -(index * newImageWidth + offsetX)
           });
         };
-
 
         /**
          * Randomly select an image in each panel
@@ -263,7 +265,6 @@ angular.module('buildScott')
           }
         };
 
-
         /**
          * Trigger randomize every so often
          */
@@ -274,7 +275,6 @@ angular.module('buildScott')
           }, options.randomizeTimerPause);
         };
 
-
         /**
          * Start canvas animation loop.
          */
@@ -283,18 +283,16 @@ angular.module('buildScott')
           renderer.render(stage);
         };
 
-
         /**
          * Convert Canvas drawing to image
          */
         var convertToImage = function() {
           canvasElement[0].toBlob(function(blob) {
-            saveAs(blob, "my-scott.png");
+            saveAs(blob, 'my-scott.png');
           });
         };
 
-
         init();
       }
-    }
+    };
   });

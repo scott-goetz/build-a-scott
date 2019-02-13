@@ -2,6 +2,13 @@
 @import 'fonts';
 @import 'settings';
 
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
 html, body {
   height: 100%;
 }
@@ -17,12 +24,49 @@ body {
 // COMMON ELEMENTS
 // ----------------------------
 
+p {
+  font-size: 25px;
+  font-size: rem-calc(map-get($p, font-size));
+  line-height: map-get($p, line-height);
+}
+
 hr {
   width: rem-calc(map-get($hr, width));
   height: rem-calc(map-get($hr, height));
   background: map-get($hr, color);
   border: none;
   display: block;
+  margin: rem-calc(map-get($hr, margin));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cm-logo {
+  width: rem-calc(map-get($cm-logo, width));
+  height: rem-calc(map-get($cm-logo, height));
+  background: url("../media/images/critical-mass.jpg") no-repeat right top #000;
+  position: absolute;
+  top: rem-calc(map-get($cm-logo, offset-y));
+  left: 50%;
+  text-indent: -9999px;
+  @include translate(-50%, 0);
+  z-index: 1000;
+}
+
+.build-a-scott-url {
+  width: 90%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  position: absolute;
+  top: 53%;
+  left: 50%;
+  @include translate(-50%, -50%);
+  z-index: 500;
+}
+
+.underline {
+  text-decoration: underline;
 }
 
 
@@ -34,11 +78,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .headline {
-  //text-align: left;
+  font-size: rem-calc(map-get($headline, font-size));
+  margin: 0;
 }
 
 .tagline {
   @include font-libre-baskerville-italic();
+  margin: 0;
 }
 
 
@@ -46,8 +92,8 @@ h1, h2, h3, h4, h5, h6 {
 // BUTTONS
 // ----------------------------
 
-a.button {
-  background: map-get($cta, primary-background);
+.button {
+  background-color: map-get($cta, primary-background);
   border-width: rem-calc(map-get($cta, border-width));
   border-color: map-get($cta, primary-border-color);
   border-radius: 100px;
@@ -59,14 +105,16 @@ a.button {
   display: inline-block;
   letter-spacing: rem-calc(map-get($cta, letter-spacing));
   line-height: map-get($cta, line-height);
+  margin: rem-calc(map-get($cta, margin));
   padding: rem-calc(map-get($cta, padding));
   text-decoration: none;
   text-transform: uppercase;
-  @include transition(background .3s ease-out, color .3s ease-out);
+  @include transition(background .4s ease-out, color .4s ease-out);
 
   &:hover {
-    //background: black;
-    //color: pink;
+    background-color: map-get($cta, hover-background);
+    border-color: map-get($cta, hover-border-color);
+    color: map-get($cta, hover-color);
   }
 
   &.alt,
@@ -76,9 +124,44 @@ a.button {
     color: map-get($cta, secondary-color);
 
     &:hover {
-
+      background-color: map-get($cta, hover-background);
+      border-color: map-get($cta, hover-border-color);
+      color: map-get($cta, hover-color);
     }
   }
+
+  &.full {
+    width: 100%;
+  }
+
+  &.icn {
+    position: relative;
+
+    &:after {
+      display: block;
+      font-family: $font-family-font-awesome;
+      position: absolute;
+      top: 50%;
+      right: rem-calc(map-get($cta, icn-offset-x));
+      @include translate(0, -50%);
+    }
+  }
+
+  &.icn-download:after { content: "\f019"; }
+  &.icn-random:after { content: "\f074"; top: 53% }
+  &.icn-font:after { content: "\f031"; }
+}
+
+
+// MARGINS
+// ----------------------------
+
+.margin-top {
+  margin-top: rem-calc(map-get($margins, large));
+}
+
+.margin-bottom {
+  margin-bottom: rem-calc(map-get($margins, large));
 }
 
 
@@ -93,17 +176,21 @@ a.button {
     width: 100%;
     height: 100%;
     @include flexDisplay();
+    position: relative;
 
     .section-row,
     .section-column {
       position: relative;
 
       .content {
+        width: 70%;
         position: absolute;
         top: 50%;
         left: 50%;
         text-align: center;
         @include translate(-50%, -50%);
+
+        p {}
       }
     }
 
@@ -125,54 +212,48 @@ a.button {
 // SECTIONS
 // ----------------------------
 
-#introduction {
-  .headline {
+#build {
 
-  }
 }
 
-#build {
-  #scott-machine {
+#demo {
+
+}
+
+#scott-machine {
+  width: 100%;
+  cursor: move;
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  @include flexDisplay();
+  @include flexDirection(column);
+  font-size: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  &:active {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+  }
+
+  canvas {
     width: 100%;
-    cursor: move;
-    cursor: grab;
-    cursor: -moz-grab;
-    cursor: -webkit-grab;
-    @include flexDisplay();
-    @include flexDirection(column);
-    font-size: 0;
-    overflow: hidden;
+    height: 100%;
+    display: block;
+  }
+
+  .instructions {
+    background: rgba(0,0,0,0.5);
     position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-
-    &:active {
-      cursor: grabbing;
-      cursor: -moz-grabbing;
-      cursor: -webkit-grabbing;
-    }
-
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-
-    .slot {
-      @include flexDisplay();
-      @include flexDirection();
-      @include flexGrow(1);
-
-
-
-      &.slot-1 { height: 27.26%; }
-      &.slot-2 { height: 18.63%; }
-      &.slot-3 { height: 12.47%; }
-      &.slot-4 { height: 14.79%; }
-      &.slot-5 { height: 27.40%; }
-    }
+    top: 50%;
+    left: 50%;
+    @include translate(-50%, -50%);
+    z-index: 10;
   }
 }
