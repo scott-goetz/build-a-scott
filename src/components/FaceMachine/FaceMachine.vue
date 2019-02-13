@@ -18,23 +18,54 @@ export default {
     FaceMachinePanel
   },
   methods: {
+    /**
+     * Start an animation loop.
+     */
+    animate() {
+      requestAnimationFrame(this.animate);
+      this.renderer.render(this.stage);
+    },
+    /**
+     * Initial PIXI draw.
+     */
     draw() {
       console.info('DRAW');
+
+      this.renderer.render(this.stage);
+
+      this.resize();
     },
+    /**
+     * Create image references and prep for preloading.
+     */
     generateFaces(version) {
-      this.$data.shuffledFaces.map((currFace) => {
+      this.$data.shuffledFaces.forEach((currFace) => {
         const currFacePanel = [];
 
-        this.$data.panelHeights.map((currPanelHeight, index) => {
+        this.$data.panelHeights.forEach((currPanelHeight, index) => {
           const padIndex = ('' + (index + 1)).padStart(2, '0');
-          const currFaceId = `${currFace}-${padIndex}-${version}`;
+          const currFaceId = `${currFace}-${padIndex}${version}`;
           const currFacePath = `${this.$data.imageRoot}/${currFaceId}.${this.$data.imageFormat}`;
-          currFacePanel.push(currFacePath);
-        });
 
-        this.panels[currFace] = currFacePanel;
+          // Create an object for each panel
+          if (!(index in this.panels)) {
+            this.panels[index] = {};
+          }
+
+          // Store panel images
+          this.panels[index][currFaceId] = currFacePath;
+
+          // Preload all face images
+          this.loader.add(currFaceId, currFacePath);
+        });
       });
     },
+    resize() {
+      console.info('RESIZE');
+    },
+    /**
+     * Initial calculations and prep work.
+     */
     setup() {
       console.info('SETUP');
 
@@ -55,24 +86,25 @@ export default {
         this.slots[panelCount].index = panelCount; // Necessary for dragging
 
         for (const key in currPanelImages) {
-          // const spriteTexture = this.loader.resources[key].texture;
-          console.info('Key:', key);
-          console.info('CurrPanelImage: ', currPanelImages[key]);
-          console.info('Loader Resources:', this.loader.resources);
+          const spriteTexture = this.loader.resources[key].texture;
           // Add, position and scale image
-          // let currSprite = new PIXI.Sprite(spriteTexture);
-          // currSprite.scale.x = currSprite.scale.y = scaleDiff;
-          // currSprite.x = newImageWidth * imageCount;
-          // currSprite.y = 0;
+          let currSprite = new PIXI.Sprite(spriteTexture);
+          currSprite.y = 0;
+
+          this.slots[panelCount].addChild(currSprite);
         }
+
+        this.stage.addChild(this.slots[panelCount]);
 
         panelPosY = panelPosY + panelHeight;
         panelCount++;
-        console.info('+++');
+
+        // Begin storing current indexes
+        this.currSlotImages[panel] = 0;
       }
 
-      console.info('Slots: ', this.slots);
-      console.info('----');
+      this.draw();
+      requestAnimationFrame(this.animate);
     },
     shuffle(arr) {
       var currentIndex = arr.length,
@@ -104,14 +136,11 @@ export default {
         height: 730
       },
       imageFormat: 'jpg',
-      imageRoot: '/media/images/scott',
+      imageRoot: '/assets/scott',
       loader: PIXI.loader,
       panels: {},
       panelHeights: [181, 159, 95, 95, 200],
-      PIXIWrapper: {
-        PIXI,
-        PIXIApp: null
-      },
+      renderer: null,
       shuffledFaces: [],
       stage: new PIXI.Container()
     };
@@ -121,7 +150,8 @@ export default {
     const w = renderCanvas.offsetWidth;
     const h = renderCanvas.offsetHeight;
 
-    this.PIXIWrapper.PIXIApp = new PIXI.Application(w, h, {
+    // Initialise PIXI
+    this.renderer = new PIXI.Application(w, h, {
       view: renderCanvas,
       antialiasing: false,
       autoResize: true,
@@ -130,19 +160,13 @@ export default {
       transparent: false
     });
 
-    console.info('MOUNTED');
+    // Randomize our faces, seperate panels and preload images
     this.shuffledFaces = this.shuffle(this.faces);
     this.generateFaces(this.version);
 
-    // Load all Scott images
-    for (const key in this.panels) {
-      console.group('load ' + key);
-      console.info(this.panels[key]);
-      this.loader.add(key, this.panels[key]);
-      console.groupEnd();
-    }
-
-    this.loader.load(this.setup);
+    this.loader.load(() => {
+      this.setup();
+    });
 
     console.info('======');
   }
